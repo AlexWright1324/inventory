@@ -24,3 +24,6 @@ vite.config.ts.timestamp-*
 .direnv
 .pre-commit-config.yaml
 just-flake.just
+
+# Project
+/store
