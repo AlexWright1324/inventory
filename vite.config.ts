@@ -7,6 +7,12 @@ export default defineConfig({
 		watch: {
 			// Fix for "Too many open files"
 			ignored: ["**/.direnv/**"]
+		},
+		fs: {
+			allow: ["store"]
 		}
+	},
+	define: {
+		__ENABLE_CARTA_SSR_HIGHLIGHTER__: false
 	}
 });

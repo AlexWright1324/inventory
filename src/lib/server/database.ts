@@ -1,12 +1,98 @@
-import { Sequelize } from '@sequelize/core';
-import { SqliteDialect } from '@sequelize/sqlite3';
-import { Asset } from "./models/asset";
+import { Sequelize, DataTypes, Model, type Optional } from 'sequelize';
 
 const sequelize = new Sequelize({
-  dialect: SqliteDialect,
+  dialect: 'sqlite',
   storage: 'store/db.sqlite',
-  models: [Asset],
+  logging: false,
 });
+
+class Category extends Model {
+  declare id: number;
+  declare name: string;
+}
+
+Category.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  },
+  {
+    sequelize,
+    modelName: 'category'
+  }
+);
+
+class Location extends Model {
+  declare id: number;
+  declare name: string;
+}
+
+Location.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  },
+  {
+    sequelize,
+    modelName: 'location'
+  }
+);
+
+class Asset extends Model {
+  declare id: number;
+  declare name: string;
+  declare tag: string;
+  declare description: string;
+}
+
+Asset.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      defaultValue: 'New Asset',
+      allowNull: false
+    },
+    tag: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.TEXT,
+      defaultValue: "",
+      allowNull: false
+    },
+    image: {
+      type: DataTypes.STRING
+    }
+  },
+  {
+    sequelize,
+    modelName: 'asset'
+  }
+);
+
+Asset.hasMany(Category);
+Asset.hasOne(Location);
 
 try {
   await sequelize.authenticate();
@@ -16,9 +102,10 @@ try {
 }
 
 try {
-  await sequelize.sync();
+  await sequelize.sync({ force: true });
 } catch (error) {
   console.error('Unable to sync database:', error);
 }
-export default sequelize
+
+export { sequelize, Asset, Category, Location };
 

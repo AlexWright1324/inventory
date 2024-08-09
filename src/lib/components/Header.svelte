@@ -2,20 +2,38 @@
 	import { page } from '$app/stores';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import Keycloak from '@auth/sveltekit/providers/keycloak';
+
+	import InventorySVG from '$lib/assets/inventory.svg?raw';
+	import { LogIn, LogOut } from 'lucide-svelte';
 </script>
 
 <header>
-    <div>
-        <a href="/">UWCS Inventory</a>
-        <a href="/assets">Assets</a>
-    </div>
-	<div>
-		{#if $page.data.session}
-			<span>Logged in as {$page.data.session.user?.name}</span>
-			<button onclick={signOut}>Sign Out</button>
-		{:else}
-			<button onclick={signIn(Keycloak({}).id)}>Sign In</button>
-		{/if}
+	<div class="links">
+		<a href="/">{@html InventorySVG}</a>
+		<ul>
+			<li><a href="/assets">Assets</a></li>
+			{#if $page.data.admin}
+				<li>
+					<a href="/settings">Settings</a>
+				</li>
+			{/if}
+		</ul>
+	</div>
+	<div class="links">
+		<ul>
+			{#if $page.data.session}
+				<li>
+					<span>{$page.data.session.user?.name}</span>
+				</li>
+				<li>
+					<button onclick={signOut}><LogOut /></button>
+				</li>
+			{:else}
+				<li>
+					<button onclick={signIn(Keycloak({}).id)}><LogIn /></button>
+				</li>
+			{/if}
+		</ul>
 	</div>
 </header>
 
@@ -23,6 +41,57 @@
 	header {
 		display: flex;
 		justify-content: space-between;
-		background-color: gray;
+		max-width: var(--app-max-page-width);
+		width: 100%;
+		position: relative;
+
+		&:before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: -120px;
+			left: -120px;
+			border-left: 120px solid transparent;
+			border-right: 120px solid transparent;
+			border-bottom: solid rgb(58, 125, 255) 1px;
+			z-index: -1;
+		}
+	}
+
+	.links {
+		display: flex;
+		align-items: center;
+		padding: 8px;
+
+		& a,
+		button {
+			display: inline-block;
+			text-decoration: none;
+			color: inherit;
+			opacity: 0.65;
+			transition: opacity 0.5s;
+
+			&:hover {
+				opacity: 1;
+			}
+		}
+		& ul {
+			list-style: none;
+			display: flex;
+			align-items: center;
+
+			& li {
+				display: inline-block;
+			}
+			& a, button {
+				padding: 8px;
+			}
+			& button {
+				padding-left: 14px;
+				padding-bottom: 4px;
+			}
+		}
 	}
 </style>

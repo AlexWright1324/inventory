@@ -1,0 +1,12 @@
+<svg x="250" y="318" viewBox="0 -10 510 170" fill="none" height="34px" xmlns="http://www.w3.org/2000/svg">
+    <circle fill="#FFC700" cx="57.5" cy="21" r="21"></circle>
+    <circle fill="#FFC700" cx="21.5" cy="57" r="21"></circle>
+    <circle fill="#3A7DFF" cx="57.5" cy="95" r="21"></circle>
+    <circle fill="#3A7DFF" cx="94" cy="131.5" r="21"></circle>
+    <text fill="white" font-family="Mulish, sans-serif" font-size="72" letter-spacing="2px">
+        <tspan font-weight="700" x="143" y="70">UWCS</tspan>
+    </text>
+    <text fill="white" font-family="Mulish, sans-serif" font-size="72" letter-spacing="0em">
+        <tspan font-weight="600" x="143" y="150">Inventory</tspan>
+    </text>
+</svg>

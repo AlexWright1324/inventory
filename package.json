@@ -32,8 +32,13 @@
   "type": "module",
   "dependencies": {
     "@auth/sveltekit": "^1.4.2",
-    "@sequelize/core": "^7.0.0-alpha.41",
-    "@sequelize/sqlite3": "^7.0.0-alpha.41",
-    "ress": "^5.0.2"
+    "@cartamd/plugin-attachment": "^4.0.2",
+    "carta-md": "^4.4.1",
+    "github-markdown-css": "^5.6.1",
+    "isomorphic-dompurify": "^2.14.0",
+    "lucide-svelte": "^0.426.0",
+    "ress": "^5.0.2",
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7"
   }
 }
