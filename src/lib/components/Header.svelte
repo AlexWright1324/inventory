@@ -5,6 +5,10 @@
 
 	import InventorySVG from "$lib/assets/inventory.svg?raw"
 	import { LogIn, LogOut, ShoppingBasket } from "lucide-svelte"
+
+	import { Basket } from "$lib/client/basket"
+
+	let basket = Basket()
 </script>
 
 <header>
@@ -26,7 +30,12 @@
 					<span>{$page.data.session.user?.name}</span>
 				</li>
 				<li>
-					<a class="icon" href="/basket"><ShoppingBasket /></a>
+					<a class="icon" href="/basket">
+						<ShoppingBasket />
+						{#if $basket.length > 0}
+							<span id="basket-count">{$basket.length}</span>
+						{/if}
+					</a>
 				</li>
 				<li>
 					<button onclick={() => signOut()}><LogOut /></button>
@@ -47,6 +56,24 @@
 		width: 100%;
 		max-width: var(--app-max-page-width);
 		border-bottom: solid rgb(58, 125, 255) 1px;
+	}
+
+	.icon {
+		position: relative;
+	}
+
+	#basket-count {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background-color: rgb(58, 125, 255);
+		color: white;
+		border-radius: 50%;
+		width: 1rem;
+		height: 1rem;
+		font-size: 0.75rem;
+		font-weight: bold;
+		text-align: center;
 	}
 
 	.links {

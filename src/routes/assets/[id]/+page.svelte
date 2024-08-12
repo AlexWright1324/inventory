@@ -4,12 +4,12 @@
 	import { Carta, Markdown } from "carta-md"
 	import DOMPurify from "isomorphic-dompurify"
 	import "carta-md/default.css"
+	import Bar from "$lib/components/AdminBar.svelte"
+	import AddBasket from "$lib/components/AddBasket.svelte"
 
 	const carta = new Carta({
 		sanitizer: DOMPurify.sanitize
 	})
-
-	import Bar from "$lib/components/AdminBar.svelte"
 
 	export let data: PageData
 </script>
@@ -43,11 +43,7 @@
 				</ul>
 			</li>
 		</ul>
-		<form action="">
-			<!-- TODO Change to available quantity -->
-			<input type="number" name="quantity" min="1" value="1" max={data.asset.quantity} />
-			<button class="app-button" type="submit">Add to Basket</button>
-		</form>
+		<AddBasket id={data.asset.id.toString()} />
 	</aside>
 	<div class="content">
 		<Markdown {carta} value={data.asset.description} />

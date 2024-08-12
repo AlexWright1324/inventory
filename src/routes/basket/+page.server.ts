@@ -6,7 +6,5 @@ export const load: PageServerLoad = async ({ parent }) => {
 
     if (!layout.session) {
 		return redirect(307, "/")
-	}
-
-    
+	} 
 }
