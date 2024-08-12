@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:store/db.sqlite"
+}
+
+model Asset {
+  id          Int      @id @default(autoincrement())
+  name        String   @default("New Asset")
+  description String   @default("")
+  quantity    Int      @default(1)
+  tag         String?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  location   Location?  @relation(fields: [locationName], references: [name])
+  locationName String?
+  categories Category[]
+  requests   Request[]
+}
+
+model Location {
+  name String @id
+
+  assets Asset[]
+}
+
+model Category {
+  name String @id
+
+  assets Asset[]
+}
+
+model Request {
+  id          Int    @id @default(autoincrement())
+  name        String
+  userid      Int
+  description String
+  approved    Int    @default(0) // Approval Enum
+
+  assets Asset[]
+}
+
+// Thank you SQLite :3
+//enum Approval {
+//  WAITING
+//  APPROVED
+//  DENIED
+//}

@@ -57,6 +57,7 @@ input[type=text] {
 
 .markdown-body {
     background: none;
+    min-width: 300px;
 
     & ul {
         list-style-type: initial;

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { signIn, signOut } from '@auth/sveltekit/client';
-	import Keycloak from '@auth/sveltekit/providers/keycloak';
+	import { page } from "$app/stores"
+	import { signIn, signOut } from "@auth/sveltekit/client"
+	import Keycloak from "@auth/sveltekit/providers/keycloak"
 
-	import InventorySVG from '$lib/assets/inventory.svg?raw';
-	import { LogIn, LogOut } from 'lucide-svelte';
+	import InventorySVG from "$lib/assets/inventory.svg?raw"
+	import { LogIn, LogOut, ShoppingBasket } from "lucide-svelte"
 </script>
 
 <header>
@@ -26,11 +26,14 @@
 					<span>{$page.data.session.user?.name}</span>
 				</li>
 				<li>
-					<button onclick={signOut}><LogOut /></button>
+					<a class="icon" href="/basket"><ShoppingBasket /></a>
+				</li>
+				<li>
+					<button onclick={() => signOut()}><LogOut /></button>
 				</li>
 			{:else}
 				<li>
-					<button onclick={signIn(Keycloak({}).id)}><LogIn /></button>
+					<button onclick={() => signIn(Keycloak({}).id)}><LogIn /></button>
 				</li>
 			{/if}
 		</ul>
@@ -41,23 +44,9 @@
 	header {
 		display: flex;
 		justify-content: space-between;
-		max-width: var(--app-max-page-width);
 		width: 100%;
-		position: relative;
-
-		&:before {
-			content: '';
-			display: block;
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			right: -120px;
-			left: -120px;
-			border-left: 120px solid transparent;
-			border-right: 120px solid transparent;
-			border-bottom: solid rgb(58, 125, 255) 1px;
-			z-index: -1;
-		}
+		max-width: var(--app-max-page-width);
+		border-bottom: solid rgb(58, 125, 255) 1px;
 	}
 
 	.links {
@@ -85,10 +74,12 @@
 			& li {
 				display: inline-block;
 			}
-			& a, button {
+			& a,
+			button {
 				padding: 8px;
 			}
-			& button {
+			& button,
+			.icon {
 				padding-left: 14px;
 				padding-bottom: 4px;
 			}

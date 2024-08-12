@@ -48,7 +48,16 @@
               config.pre-commit.devShell
               config.just-flake.outputs.devShell
             ];
-            packages = with pkgs; [ inputs.bun.legacyPackages.${system}.bunBaseline ];
+            packages = with pkgs; [
+              inputs.bun.legacyPackages.${system}.bunBaseline
+              prisma-engines
+              openssl
+            ];
+            env = with pkgs; {
+              PRISMA_QUERY_ENGINE_LIBRARY = "${prisma-engines}/lib/libquery_engine.node";
+              PRISMA_QUERY_ENGINE_BINARY = "${prisma-engines}/bin/query-engine";
+              PRISMA_SCHEMA_ENGINE_BINARY = "${prisma-engines}/bin/schema-engine";
+            };
           };
 
           formatter = pkgs.nixfmt-rfc-style;

@@ -1,54 +1,54 @@
-<script>
-	import { page } from '$app/stores';
+<script lang="ts">
+	import { enhance } from "$app/forms"
+	import type { ActionData, PageData } from "./$types"
+
+	export let data: PageData
+	export let form: ActionData
 </script>
 
-<div>
-	<span>Categories</span>
-	<ul>
-		{#if $page.data.categories}
-			{#each $page.data.categories as category}
+<div class="box">
+{#each [[data.categories, "Categories", "Category"], [data.locations, "Locations", "Location"]] as const as [items, plural, single]}
+	<div>
+		<span>{plural}</span>
+		<form method="post" action="?/add{single}" use:enhance>
+			<input type="text" name="name" placeholder={single} required />
+			<button class="app-button" type="submit">Add</button>
+		</form>
+		<p class="error">&nbsp;
+			{#if form?.type === single}
+				{#if form?.exists}
+					{single} already Exists
+				{/if}
+			{/if}
+		</p>
+		<ul>
+			{#each items as item}
 				<li>
-					<span>{category.name}</span>
-					<form method="post" action="?/deleteCategory">
-						<input type="hidden" name="id" value={category.id} />
+					<span>{item.name}</span>
+					<form method="post" action="?/delete{single}" use:enhance>
+						<input type="hidden" name="name" value={item.name} />
 						<button class="app-button" type="submit">Delete</button>
 					</form>
 				</li>
-			{/each}
-		{/if}
-	</ul>
-	<form method="post" action="?/addCategory">
-		<input type="text" name="name" placeholder="Category" required />
-		<button class="app-button" type="submit">Add</button>
-	</form>
-</div>
-
-<div>
-	<span>Locations</span>
-	<ul>
-		{#if $page.data.locations}
-			{#each $page.data.locations as location}
+			{:else}
 				<li>
-					<span>{location.name}</span>
-					<form method="post" action="?/deleteLocation">
-						<input type="hidden" name="id" value={location.id} />
-						<button class="app-button" type="submit">Delete</button>
-					</form>
+					<span>No {plural}</span>
 				</li>
 			{/each}
-		{/if}
-	</ul>
-	<form method="post" action="?/addLocation">
-		<input type="text" name="name" placeholder="Location" required />
-		<button class="app-button" type="submit">Add</button>
-	</form>
+		</ul>
+	</div>
+{/each}
 </div>
-
 <style>
 	li {
 		margin-left: 1em;
 		& form {
 			display: inline-block;
 		}
+	}
+	.box {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
 </style>

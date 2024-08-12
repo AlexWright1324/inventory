@@ -1,37 +1,47 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { deserialize, enhance } from '$app/forms';
-	import { Carta, MarkdownEditor } from 'carta-md';
-	import { attachment } from '@cartamd/plugin-attachment';
-	import DOMPurify from 'isomorphic-dompurify';
+	import type { PageData, ActionData } from "./$types"
+	import type { ActionResult } from "@sveltejs/kit"
+	import { applyAction, deserialize, enhance } from "$app/forms"
+	import { Carta, MarkdownEditor } from "carta-md"
+	import { attachment } from "@cartamd/plugin-attachment"
+	import DOMPurify from "isomorphic-dompurify"
 
-	import Bar from '$lib/components/AdminBar.svelte';
+	import Bar from "$lib/components/AdminBar.svelte"
+	import { invalidateAll } from "$app/navigation"
 
 	const upload = async (file: File): Promise<string | null> => {
-		let formData = new FormData();
-		formData.append('file', file);
-		const r = await fetch('?/upload', {
-			method: 'POST',
+		let formData = new FormData()
+		formData.append("file", file)
+		const response = await fetch("?/upload", {
+			method: "POST",
 			body: formData
-		});
-		if (!r.ok) return null;
+		})
+		if (!response.ok) return null
 
-		const { data } = deserialize(await r.text());
-		console.log(data.url);
-		return data.url;
-	};
+		const result: ActionResult = deserialize(await response.text())
+		if (result.type === "success") {
+			await invalidateAll()
+		}
+		await applyAction(result)
+		console.log(form?.url)
+		return form?.url ? form.url : null
+	}
 
-	const asset = $page.data.asset;
 	const carta = new Carta({
 		sanitizer: DOMPurify.sanitize,
 		extensions: [
 			attachment({
 				async upload(file) {
-					return await upload(file);
+					return await upload(file)
 				}
 			})
 		]
-	});
+	})
+
+	export let data: PageData
+	export let form: ActionData
+
+	let localData = data
 </script>
 
 <Bar>
@@ -41,33 +51,47 @@
 <form style="display: contents;" action="?/update" method="POST" id="asset">
 	<ul>
 		<li>
-			<span>Name</span>
-			<input type="text" name="name" value={asset.name} />
+			<label>
+				<span>Name</span>
+				<input type="text" name="name" value={localData.asset.name} />
+			</label>
 		</li>
 
 		<li>
-			<span>Tag</span>
-			<input type="text" name="tag" value={asset.tag} />
+			<label>
+				<span>Tag</span>
+				<input type="text" name="tag" value={localData.asset.tag} />
+			</label>
 		</li>
+
 		<li>
-			<label for="location-select">Locations</label>
-			<select name="locationId" id="location-select">
-				{#each $page.data.locations as location}
-					<option value={location.id}>{location.name}</option>
-				{/each}
-			</select>
+			<label>
+				<span>Quantity</span>
+				<input type="number" name="quantity" min="1" value={localData.asset.quantity} />
+			</label>
+		</li>
+
+		<li>
+			<label>
+				<span>Locations</span>
+				<select name="locationName">
+					{#each localData.locations as location}
+						<option value={location.name} selected={localData.asset.location?.name === location.name}>{location.name}</option>
+					{/each}
+				</select>
+			</label>
 		</li>
 	</ul>
 
-	{#if asset.categories}
-		{#each asset.categories as category}
-			{category.name}
-		{/each}
-	{/if}
+	{#each localData.asset.categories as category}
+		{category.name}
+		{:else}
+		No Categories
+	{/each}
 
-	<MarkdownEditor {carta} bind:value={asset.description} />
+	<MarkdownEditor {carta} bind:value={localData.asset.description} />
 
-	<input type="hidden" name="description" value={asset.description} />
+	<input type="hidden" name="description" value={localData.asset.description} />
 </form>
 
 <div>
@@ -77,12 +101,12 @@
 		<button type="submit" class="app-button">Upload File</button>
 	</form>
 	<ul>
-		{#each $page.data.files as file}
+		{#each data.files as file}
 			<li>
-				<a href="/store/{asset.id}/{file}" class="app-button">{file}</a>
+				<a href="/store/{data.asset.id}/{file}" class="app-button">{file}</a>
 				<form use:enhance method="POST" action="?/mkimage" style="display: contents;">
 					<input type="hidden" name="file" value={file} />
-					<button type="submit" class="app-button" disabled={file === asset.image}>Make Image</button>
+					<button type="submit" class="app-button" disabled={file === data.asset.image}>Make Image</button>
 				</form>
 				<form use:enhance method="POST" action="?/delete" style="display: contents;">
 					<input type="hidden" name="file" value={file} />
